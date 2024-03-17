@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
         fs_account_id: "Po4-MoBxTCCr9iGvp7bG8w",
       });
       setManagementUrl(
-        "https://fsportal.test.onfastspring.com/account/OZ0MEsEpTPeDHLEYWYaLog/NBV5ndN0RB4"
+        "https://fsportal.test.onfastspring.com/account/OZ0MEsEpTPeDHLEYWYaLog/THVHMt7LTCM"
       );
     } finally {
       setLoading(false);

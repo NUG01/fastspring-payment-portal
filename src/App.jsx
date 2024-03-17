@@ -18,18 +18,13 @@ function App() {
     <>
       <div id="message"></div>
       {loading && <Spinner />}
-
       {!loading && (
         <FastSpringProvider>
-          {/* <Router> */}
-          {/* <Router> */}
           <Navigation user={user} />
           <Routes>
             <Route path="/" element={<Account user={user} />} />
             {/* <Route path="/about" element={<About />} /> */}
           </Routes>
-          {/* </Router> */}
-          {/* </Router> */}
         </FastSpringProvider>
       )}
     </>
