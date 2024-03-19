@@ -10,6 +10,7 @@ export default function Account() {
 
   const scriptData = useRef(null);
   const [scriptRendered, setScriptRendered] = useState(false);
+  const [oneClick, setOneClick] = useState(false);
 
   function renderPaymentScript() {
     const scriptId = "fsc-api";
@@ -28,9 +29,22 @@ export default function Account() {
         "data-storefront",
         "fsportal.test.onfastspring.com/embedded-portal-payment"
       );
+      script.setAttribute("data-access-key", "SAONYVFHRSM6PUXFW-KZMA");
 
       script.onload = () => {
-        window.fastspring.builder.add("saasco-bronze-10-seats", 1);
+        if (!oneClick) {
+          window.fastspring.builder.add("saasco-bronze-10-seats", 1);
+        } else {
+          window.fastspring.builder.secure({
+            account: "Po4-MoBxTCCr9iGvp7bG8w",
+            items: [
+              {
+                product: "additional-10-bronze-seats",
+                quantity: 1,
+              },
+            ],
+          });
+        }
       };
 
       document.body.appendChild(script);
@@ -88,14 +102,21 @@ export default function Account() {
         </div>
         <div className="pt-[40px]">
           <AccountManagement />
-
-          <div className="mt-[30px] w-[200px] h-[200px] bg-[red]"></div>
         </div>
         <div className="pt-[80px]">
-          <h2 className="text-[18px]" onClick={() => {}}>
+          <h2
+            onMouseEnter={() => {
+              setOneClick(true);
+            }}
+            onMouseLeave={() => {
+              setOneClick(false);
+            }}
+            className="text-[18px]"
+            onClick={() => {
+              renderPaymentScript();
+            }}>
             Buy more seats
           </h2>
-          <div className="mt-[30px] w-[200px] h-[200px] bg-[red]"></div>
         </div>
       </div>
     </div>
