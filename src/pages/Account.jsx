@@ -1,35 +1,31 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import FsButton from "../components/FsButton";
 import { useFastSpring } from "../store/FastSpringContext";
 import { useAuth } from "../store/AuthContext";
 import AccountManagement from "../components/AccountManagement";
+import { scriptLoader } from "../helpers";
 
 export default function Account() {
   const { products, productsFetched } = useFastSpring();
   const { subscription } = useAuth();
 
-  const scriptData = useRef(null);
   const [scriptRendered, setScriptRendered] = useState(false);
   const [oneClick, setOneClick] = useState(false);
 
   function renderPaymentScript() {
-    const scriptId = "fsc-api";
-    const existingScript = document.getElementById(scriptId);
-    if (existingScript) document.body.removeChild(existingScript);
-    if (!scriptData.current && productsFetched) {
+    if (productsFetched) {
       setScriptRendered(true);
-      console.log("products23", document.getElementById(scriptId));
-      document.getElementById(scriptId)?.remove();
-      const script = document.createElement("script");
-      script.src =
-        "https://sbl.onfastspring.com/sbl/1.0.0/fastspring-builder.min.js";
-      script.type = "text/javascript";
-      script.id = scriptId;
-      script.setAttribute(
-        "data-storefront",
-        "fsportal.test.onfastspring.com/embedded-portal-payment"
+      const attributes = [
+        {
+          name: "data-access-key",
+          value: "SAONYVFHRSM6PUXFW-KZMA",
+        },
+      ];
+
+      const script = scriptLoader(
+        "fsportal.test.onfastspring.com/embedded-portal-payment",
+        attributes
       );
-      script.setAttribute("data-access-key", "SAONYVFHRSM6PUXFW-KZMA");
 
       script.onload = () => {
         if (!oneClick) {

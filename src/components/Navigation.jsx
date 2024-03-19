@@ -1,6 +1,7 @@
 import { Layout, Menu, Typography } from "antd";
 import { useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 const { Header } = Layout;
 const { Title } = Typography;
@@ -32,8 +33,12 @@ const Navigation = ({ user }) => {
             mode="horizontal"
             defaultSelectedKeys={[location.pathname]}
             style={{ lineHeight: "64px", flex: 1, justifyContent: "end" }}>
-            <Menu.Item key="/dahsboard">Dashboard</Menu.Item>
-            <Menu.Item key="/">Account</Menu.Item>
+            <Menu.Item key="/dahsboard">
+              <Link to="/dashboard">Dashboard</Link>
+            </Menu.Item>
+            <Menu.Item key="/">
+              <Link to="/">Account</Link>
+            </Menu.Item>
             <Menu.Item key="/support">Support</Menu.Item>
           </Menu>
           <div style={{ color: "white", flex: 1, textAlign: "end" }}>

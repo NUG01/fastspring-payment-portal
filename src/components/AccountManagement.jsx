@@ -1,5 +1,6 @@
 import { Button } from "antd";
 import React, { useEffect } from "react";
+import { loadEpmlScript } from "../helpers";
 
 const AccountManagement = () => {
   const authenticatedAccountURL =
@@ -9,21 +10,12 @@ const AccountManagement = () => {
   useEffect(() => {
     const loadAndInitEPML = () => {
       if (!document.getElementById("fsc-epml")) {
-        const script = document.createElement("script");
-        script.src = "https://epml.onfastspring.com/epml/epml.min.js";
-        script.id = "fsc-epml";
-        script.dataset.paymentComponentId = "payment-portal-component";
-        document.body.appendChild(script);
+        const script = loadEpmlScript();
 
         script.onload = () => {
-          console.log("EPML script loaded.");
           if (window.fastspring && window.fastspring.epml) {
             window.fastspring.epml.init(authenticatedAccountURL);
           }
-        };
-
-        script.onerror = () => {
-          console.error("Failed to load EPML script.");
         };
       }
     };
@@ -34,8 +26,6 @@ const AccountManagement = () => {
   const handleOpenPaymentManagement = () => {
     if (window.fastspring && window.fastspring.epml) {
       window.fastspring.epml.paymentManagementComponent(subscriptionId);
-    } else {
-      console.error("EPML is not initialized.");
     }
   };
 

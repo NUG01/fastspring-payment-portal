@@ -1,26 +1,31 @@
-export const scriptLoader = (fastSpringCallBack = null, scriptData) => {
+export const scriptLoader = (storefront, attributes = null) => {
+  const scriptId = "fsc-api";
+
+  document.getElementById(scriptId)?.remove();
+
   const script = document.createElement("script");
+  script.src =
+    "https://sbl.onfastspring.com/sbl/1.0.0/fastspring-builder.min.js";
   script.type = "text/javascript";
   script.id = scriptId;
   script.setAttribute("data-continuous", "true");
-  script.src =
-    "https://sbl.onfastspring.com/sbl/1.0.0/fastspring-builder.min.js";
-  script.dataset.storefront = "fsportal.test.onfastspring.com";
+  script.dataset.storefront = storefront;
 
-  // script.setAttribute(
-  //   "data-storefront",
-  //   "fsportal.test.onfastspring.com/embedded-fast-pay"
-  // );
+  if (attributes) {
+    attributes.forEach((attr) => {
+      script.setAttribute(attr.name, attr.value);
+    });
+  }
 
-  window.fastSpringCallBack = fastSpringCallBack;
-  script.setAttribute("data-data-callback", "fastSpringCallBack");
+  return script;
+};
 
-  script.onload = () => {
-    scriptData.current = window.fastspring;
-    window.dispatchEvent(
-      new CustomEvent("scriptDataLoaded", { detail: scriptData.current })
-    );
-  };
-
+export const loadEpmlScript = () => {
+  const script = document.createElement("script");
+  script.src = "https://epml.onfastspring.com/epml/epml.min.js";
+  script.id = "fsc-epml";
+  script.setAttribute("data-payment-component-id", "payment-portal-component");
   document.body.appendChild(script);
+
+  return script;
 };

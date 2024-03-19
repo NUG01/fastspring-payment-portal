@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import Spinner from "./components/Spinner";
 import { useAuth } from "./store/AuthContext";
 import { FastSpringProvider } from "./store/FastSpringContext";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   const { user, login, loading, fastspringAccount } = useAuth();
@@ -23,6 +24,8 @@ function App() {
           <Navigation user={user} />
           <Routes>
             <Route path="/" element={<Account user={user} />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+
             {/* <Route path="/about" element={<About />} /> */}
           </Routes>
         </FastSpringProvider>
