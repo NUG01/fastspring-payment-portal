@@ -1,15 +1,13 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import FsButton from "../components/FsButton";
 import { useFastSpring } from "../store/FastSpringContext";
 import { useAuth } from "../store/AuthContext";
 import AccountManagement from "../components/AccountManagement";
-import { render } from "react-dom";
 
 export default function Account() {
   const { products, productsFetched } = useFastSpring();
   const { subscription } = useAuth();
 
-  const [renderPaymentComponent, setRenderPaymentComponent] = useState(false);
   const scriptData = useRef(null);
   const [scriptRendered, setScriptRendered] = useState(false);
 
@@ -30,53 +28,14 @@ export default function Account() {
         "data-storefront",
         "fsportal.test.onfastspring.com/embedded-portal-payment"
       );
-      script.setAttribute("data-continuous", "true");
 
       script.onload = () => {
-        scriptData.current = window.fastspring;
-        window.dispatchEvent(
-          new CustomEvent("scriptDataLoaded", { detail: scriptData.current })
-        );
+        window.fastspring.builder.add("saasco-bronze-10-seats", 1);
       };
 
       document.body.appendChild(script);
     }
   }
-
-  // useEffect(() => {
-  //   console.log("productsFetched", productsFetched);
-  //   const scriptId = "fsc-api";
-  //   if (!scriptData.current && productsFetched) {
-  //     console.log("products23", document.getElementById(scriptId));
-  //     document.getElementById(scriptId)?.remove();
-  //     const script = document.createElement("script");
-  //     script.src =
-  //       "https://sbl.onfastspring.com/sbl/1.0.0/fastspring-builder.min.js";
-  //     script.type = "text/javascript";
-  //     script.id = scriptId;
-  //     script.setAttribute(
-  //       "data-storefront",
-  //       "fsportal.test.onfastspring.com/embedded-fast-pay"
-  //     );
-  //     script.setAttribute("data-continuous", "true");
-
-  //     script.onload = () => {
-  //       scriptData.current = window.fastspring;
-  //       window.dispatchEvent(
-  //         new CustomEvent("scriptDataLoaded", { detail: scriptData.current })
-  //       );
-  //     };
-
-  //     document.body.appendChild(script);
-  //   }
-  // }, [productsFetched]);
-
-  const paymentHandler = () => {
-    setRenderPaymentComponent(true);
-    setTimeout(() => {
-      setOpacityToZero();
-    }, 1200);
-  };
 
   let mainProduct = "saasco-bronze-10-seats";
   if (productsFetched) {
@@ -97,6 +56,7 @@ export default function Account() {
               <p>Subscription: {subscription?.display}</p>
               <p>Monthly Charge: ${subscription?.priceInPayoutCurrency}</p>
             </div>
+
             {(productsFetched || true) && (
               <FsButton
                 renderPaymentComponent={renderPaymentScript}
