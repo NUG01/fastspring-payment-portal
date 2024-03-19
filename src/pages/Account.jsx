@@ -28,7 +28,7 @@ export default function Account() {
       script.id = scriptId;
       script.setAttribute(
         "data-storefront",
-        "fsportal.test.onfastspring.com/embedded-fast-pay"
+        "fsportal.test.onfastspring.com/embedded-portal-payment"
       );
       script.setAttribute("data-continuous", "true");
 
