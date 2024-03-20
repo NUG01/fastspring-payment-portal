@@ -1,16 +1,19 @@
 import { useState } from "react";
-import FsButton from "../components/FsButton";
 import { useFastSpring } from "../store/FastSpringContext";
 import { useAuth } from "../store/AuthContext";
-import AccountManagement from "../components/AccountManagement";
-import { scriptLoader } from "../helpers";
+import AccountManagementButton from "../components/AccountManagementButton";
+import { fadeSkeletonAway, scriptLoader } from "../helpers";
+import { fsEmebeddedComponentUrl } from "../consts";
+import { Button } from "antd";
+import AccountDetails from "../components/AccountDetails";
 
 export default function Account() {
   const { products, productsFetched } = useFastSpring();
   const { subscription } = useAuth();
 
   const [scriptRendered, setScriptRendered] = useState(false);
-  const [oneClick, setOneClick] = useState(false);
+  const [oneClickPayButtonHovered, setOneClickPayButtonHovered] =
+    useState(false);
 
   function renderPaymentScript() {
     if (productsFetched) {
@@ -23,12 +26,13 @@ export default function Account() {
       ];
 
       const script = scriptLoader(
-        "fsportal.test.onfastspring.com/embedded-portal-payment",
-        attributes
+        fsEmebeddedComponentUrl,
+        oneClickPayButtonHovered ? attributes : null
       );
 
       script.onload = () => {
-        if (!oneClick) {
+        window.fastspring.builder.reset();
+        if (!oneClickPayButtonHovered) {
           window.fastspring.builder.add("saasco-bronze-10-seats", 1);
         } else {
           window.fastspring.builder.secure({
@@ -41,6 +45,8 @@ export default function Account() {
             ],
           });
         }
+
+        fadeSkeletonAway();
       };
 
       document.body.appendChild(script);
@@ -68,14 +74,19 @@ export default function Account() {
             </div>
 
             {(productsFetched || true) && (
-              <FsButton
-                renderPaymentComponent={renderPaymentScript}
-                path={mainProduct?.path}
-                title={
-                  mainProduct?.description
-                    ? "Buy: " + mainProduct.description.summary
-                    : "Buy Base Plan Now"
-                }></FsButton>
+              <Button
+                style={{
+                  border: "1px solid #000",
+                  width: "100%",
+                }}
+                onClick={renderPaymentScript}>
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: mainProduct?.description
+                      ? "Buy: " + mainProduct.description.summary
+                      : "Buy Base Plan Now",
+                  }}></span>
+              </Button>
             )}
           </div>
 
@@ -97,15 +108,15 @@ export default function Account() {
           </div>
         </div>
         <div className="pt-[40px]">
-          <AccountManagement />
+          <AccountManagementButton />
         </div>
         <div className="pt-[80px]">
           <h2
             onMouseEnter={() => {
-              setOneClick(true);
+              setOneClickPayButtonHovered(true);
             }}
             onMouseLeave={() => {
-              setOneClick(false);
+              setOneClickPayButtonHovered(false);
             }}
             className="text-[18px]"
             onClick={() => {
@@ -114,18 +125,10 @@ export default function Account() {
             Buy more seats
           </h2>
         </div>
+        <div className="pt-[40px]">
+          <AccountDetails />
+        </div>
       </div>
     </div>
   );
 }
-
-const setOpacityToZero = () => {
-  const elements = document.querySelectorAll("#fsc-embedded-checkout-skeleton");
-
-  elements.forEach((element) => {
-    if (element.style.opacity !== "0") {
-      element.style.opacity = "0";
-      element.style.transition = "opacity 0.1s";
-    }
-  });
-};

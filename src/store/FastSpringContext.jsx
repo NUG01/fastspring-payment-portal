@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { scriptLoader } from "../helpers";
-
+import { fsPortalUrl } from "../consts";
 const FastSpringContext = createContext();
 
 export const useFastSpring = () => {

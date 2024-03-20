@@ -1,10 +1,9 @@
-export const fsSecretKey = () => {
-  const combined =
-    import.meta.env.VITE_FS_USERNAME_SECRET +
-    ":" +
-    import.meta.env.VITE_FS_PASSWORD_SECRET;
+export const fsPortalUrl = "fsportal.test.onfastspring.com";
 
-  const base64Encoded = btoa(combined);
+export const fsEmebeddedComponentUrl =
+  "fsportal.test.onfastspring.com/embedded-portal-payment";
 
-  return "Basic " + base64Encoded;
-};
+export const fsBuilderUrl =
+  "https://sbl.onfastspring.com/sbl/1.0.0/fastspring-builder.min.js";
+
+export const fsEpmlUrl = "https://epml.onfastspring.com/epml/epml.min.js";

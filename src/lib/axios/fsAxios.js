@@ -1,5 +1,5 @@
 import axios from "axios";
-import { fsSecretKey } from "../../consts";
+import { fsSecretKey } from "../helpers";
 const fsAxios = axios.create({
   baseURL: import.meta.env.VITE_FS_BASE_URL,
   headers: {
