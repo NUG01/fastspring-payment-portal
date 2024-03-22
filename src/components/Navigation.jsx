@@ -1,19 +1,19 @@
-import { Layout, Menu, Typography } from "antd";
-import { useLocation } from "react-router-dom";
-import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import { Layout, Menu, Typography } from "antd"
+import { useLocation } from "react-router-dom"
+import PropTypes from "prop-types"
+import { Link } from "react-router-dom"
 
-const { Header } = Layout;
-const { Title } = Typography;
+const { Header } = Layout
+const { Title } = Typography
 
 const Navigation = ({ user }) => {
   Navigation.propTypes = {
     user: PropTypes.shape({
       username: PropTypes.string,
     }),
-  };
+  }
 
-  const location = useLocation();
+  const location = useLocation()
   return (
     <nav>
       <Layout className="layout">
@@ -22,7 +22,8 @@ const Navigation = ({ user }) => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-          }}>
+          }}
+        >
           <div style={{ flex: 1 }}>
             <Title level={3} style={{ color: "white", margin: 0 }}>
               SaaSCo Customer Portal
@@ -32,7 +33,8 @@ const Navigation = ({ user }) => {
             theme="dark"
             mode="horizontal"
             defaultSelectedKeys={[location.pathname]}
-            style={{ lineHeight: "64px", flex: 1, justifyContent: "end" }}>
+            style={{ lineHeight: "64px", flex: 1, justifyContent: "end" }}
+          >
             <Menu.Item key="/dahsboard">
               <Link to="/dashboard">Dashboard</Link>
             </Menu.Item>
@@ -47,7 +49,7 @@ const Navigation = ({ user }) => {
         </Header>
       </Layout>
     </nav>
-  );
-};
+  )
+}
 
-export default Navigation;
+export default Navigation

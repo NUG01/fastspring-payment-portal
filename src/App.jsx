@@ -1,19 +1,19 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Account from "./pages/Account";
-import Navigation from "./components/Navigation";
-import { useEffect } from "react";
-import Spinner from "./components/Spinner";
-import { useAuth } from "./store/AuthContext";
-import { FastSpringProvider } from "./store/FastSpringContext";
-import Dashboard from "./pages/Dashboard";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import Account from "./pages/Account"
+import Navigation from "./components/Navigation"
+import { useEffect } from "react"
+import Spinner from "./components/Spinner"
+import { useAuth } from "./store/AuthContext"
+import { FastSpringProvider } from "./store/FastSpringContext"
+import Dashboard from "./pages/Dashboard"
 
 function App() {
-  const { user, login, loading, fastspringAccount } = useAuth();
-  console.log(fastspringAccount);
+  const { user, login, loading, fastspringAccount } = useAuth()
+  console.log(fastspringAccount)
 
   useEffect(() => {
-    if (!user) login();
-  }, []);
+    if (!user) login()
+  }, [])
 
   return (
     <>
@@ -31,7 +31,7 @@ function App() {
         </FastSpringProvider>
       )}
     </>
-  );
+  )
 }
 
-export default App;
+export default App

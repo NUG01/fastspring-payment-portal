@@ -1,23 +1,23 @@
-import { Button, Checkbox, Form, Input } from "antd";
-import { useState } from "react";
-import { useAuth } from "../store/AuthContext";
-import BasicAxios from "../lib/axios";
+import { Button, Checkbox, Form, Input } from "antd"
+import { useState } from "react"
+import { useAuth } from "../store/AuthContext"
+import BasicAxios from "../lib/axios"
 
 export default function AccountDetails() {
-  const [componentDisabled, setComponentDisabled] = useState(true);
-  const [form] = Form.useForm();
-  const { fastspringAccount, user } = useAuth();
-  const { first, last, email, company, phone } = fastspringAccount.contact;
+  const [componentDisabled, setComponentDisabled] = useState(true)
+  const [form] = Form.useForm()
+  const { fastspringAccount, user } = useAuth()
+  const { first, last, email, company, phone } = fastspringAccount.contact
 
   const updateFastSpringAccount = (values) => {
     BasicAxios.post("/fastspring/account/update/" + user.fs_account_id, values)
       .then((response) => {
-        console.log(response);
+        console.log(response)
       })
       .catch((error) => {
-        console.error(error);
-      });
-  };
+        console.error(error)
+      })
+  }
 
   return (
     <div className="w-[100%] flex items-start justify-start flex-col">
@@ -25,7 +25,8 @@ export default function AccountDetails() {
       <div className="border-2 border-[#777] border-solid rounded-[5px] p-[20px] w-[100%]">
         <Checkbox
           checked={componentDisabled}
-          onChange={(e) => setComponentDisabled(e.target.checked)}>
+          onChange={(e) => setComponentDisabled(e.target.checked)}
+        >
           Inputs Disabled
         </Checkbox>
         <Form
@@ -48,7 +49,8 @@ export default function AccountDetails() {
           disabled={componentDisabled}
           style={{
             maxWidth: 600,
-          }}>
+          }}
+        >
           {fields().map((field) => {
             return (
               <Form.Item
@@ -64,26 +66,28 @@ export default function AccountDetails() {
                     type: field.type,
                     message: `Please input a valid ${field.name}!`,
                   },
-                ]}>
+                ]}
+              >
                 <Input
                   style={{
                     color: componentDisabled ? "#555" : "black",
                   }}
                 />
               </Form.Item>
-            );
+            )
           })}
           <Button
             disabled={componentDisabled}
             type="default"
             htmlType="submit"
-            style={{ marginLeft: "100px" }}>
+            style={{ marginLeft: "100px" }}
+          >
             Submit
           </Button>
         </Form>
       </div>
     </div>
-  );
+  )
 }
 
 const fields = () => {
@@ -118,5 +122,5 @@ const fields = () => {
       required: false,
       placeholder: "Phone",
     },
-  ];
-};
+  ]
+}

@@ -7,8 +7,9 @@ export default function Spinner() {
         alignItems: "center",
         height: "100vh",
         width: "100vw",
-      }}>
+      }}
+    >
       <span className="loader"></span>
     </div>
-  );
+  )
 }

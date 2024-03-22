@@ -1,39 +1,39 @@
-import { useState } from "react";
-import { useFastSpring } from "../store/FastSpringContext";
-import { useAuth } from "../store/AuthContext";
-import AccountManagementButton from "../components/AccountManagementButton";
-import { fadeSkeletonAway, scriptLoader } from "../helpers";
-import { fsEmebeddedComponentUrl } from "../consts";
-import { Button } from "antd";
-import AccountDetails from "../components/AccountDetails";
+import { useState } from "react"
+import { useFastSpring } from "../store/FastSpringContext"
+import { useAuth } from "../store/AuthContext"
+import AccountManagementButton from "../components/AccountManagementButton"
+import { fadeSkeletonAway, scriptLoader } from "../helpers"
+import { fsEmebeddedComponentUrl } from "../consts"
+import { Button } from "antd"
+import AccountDetails from "../components/AccountDetails"
 
 export default function Account() {
-  const { products, productsFetched } = useFastSpring();
-  const { subscription } = useAuth();
+  const { products, productsFetched } = useFastSpring()
+  const { subscription } = useAuth()
 
-  const [scriptRendered, setScriptRendered] = useState(false);
+  const [scriptRendered, setScriptRendered] = useState(false)
   const [oneClickPayButtonHovered, setOneClickPayButtonHovered] =
-    useState(false);
+    useState(false)
 
   function renderPaymentScript() {
     if (productsFetched) {
-      setScriptRendered(true);
+      setScriptRendered(true)
       const attributes = [
         {
           name: "data-access-key",
           value: "SAONYVFHRSM6PUXFW-KZMA",
         },
-      ];
+      ]
 
       const script = scriptLoader(
         fsEmebeddedComponentUrl,
         oneClickPayButtonHovered ? attributes : null
-      );
+      )
 
       script.onload = () => {
-        window.fastspring.builder.reset();
+        window.fastspring.builder.reset()
         if (!oneClickPayButtonHovered) {
-          window.fastspring.builder.add("saasco-bronze-10-seats", 1);
+          window.fastspring.builder.add("saasco-bronze-10-seats", 1)
         } else {
           window.fastspring.builder.secure({
             account: "Po4-MoBxTCCr9iGvp7bG8w",
@@ -43,22 +43,22 @@ export default function Account() {
                 quantity: 1,
               },
             ],
-          });
+          })
         }
 
-        fadeSkeletonAway();
-      };
+        fadeSkeletonAway()
+      }
 
-      document.body.appendChild(script);
+      document.body.appendChild(script)
     }
   }
 
-  let mainProduct = "saasco-bronze-10-seats";
+  let mainProduct = "saasco-bronze-10-seats"
   if (productsFetched) {
     const foundProduct = products.find(
       (product) => product.path === "saasco-bronze-10-seats"
-    );
-    if (foundProduct) mainProduct = foundProduct;
+    )
+    if (foundProduct) mainProduct = foundProduct
   }
 
   return (
@@ -79,13 +79,15 @@ export default function Account() {
                   border: "1px solid #000",
                   width: "100%",
                 }}
-                onClick={renderPaymentScript}>
+                onClick={renderPaymentScript}
+              >
                 <span
                   dangerouslySetInnerHTML={{
                     __html: mainProduct?.description
                       ? "Buy: " + mainProduct.description.summary
                       : "Buy Base Plan Now",
-                  }}></span>
+                  }}
+                ></span>
               </Button>
             )}
           </div>
@@ -97,14 +99,16 @@ export default function Account() {
               right: 50,
               backgroundColor: scriptRendered ? "#F2EFE5" : undefined,
               borderRadius: "4px",
-            }}>
+            }}
+          >
             <div
               className="col-6"
               id="fsc-embedded-checkout-container"
               style={{
                 width: "500px",
                 height: "500px",
-              }}></div>
+              }}
+            ></div>
           </div>
         </div>
         <div className="pt-[40px]">
@@ -113,15 +117,16 @@ export default function Account() {
         <div className="pt-[80px]">
           <h2
             onMouseEnter={() => {
-              setOneClickPayButtonHovered(true);
+              setOneClickPayButtonHovered(true)
             }}
             onMouseLeave={() => {
-              setOneClickPayButtonHovered(false);
+              setOneClickPayButtonHovered(false)
             }}
             className="text-[18px]"
             onClick={() => {
-              renderPaymentScript();
-            }}>
+              renderPaymentScript()
+            }}
+          >
             Buy more seats
           </h2>
         </div>
@@ -130,5 +135,5 @@ export default function Account() {
         </div>
       </div>
     </div>
-  );
+  )
 }
