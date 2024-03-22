@@ -5,10 +5,11 @@ import BasicAxios from "../lib/axios"
 import AccountManagementButton from "./AccountManagementButton"
 
 export default function AccountDetails() {
-  const [componentDisabled, setComponentDisabled] = useState(true)
-  const [form] = Form.useForm()
   const { fastspringAccount, user } = useAuth()
   const contact = fastspringAccount?.contact
+
+  const [form] = Form.useForm()
+  const [componentDisabled, setComponentDisabled] = useState(true)
 
   const updateFastSpringAccount = (values) => {
     BasicAxios.post("/fastspring/account/update/" + user.fs_account_id, values)
@@ -21,10 +22,11 @@ export default function AccountDetails() {
   }
 
   return (
-    <div className="w-[60%] flex items-start justify-start flex-col">
-      <div className="text-[21px] mb-[20px]">Account Details</div>
+    <div className="w-[60%] flex items-start justify-start flex-col pt-[40px]">
+      <div className="text-[21px] pl-[20px]">Account Details</div>
+
       {contact ? (
-        <div className="border-2 border-[#777] border-solid rounded-[5px] p-[20px] w-[100%]">
+        <div className="p-[20px] w-[100%]">
           <div className="mb-[20px]">
             <AccountManagementButton />
           </div>
@@ -36,7 +38,7 @@ export default function AccountDetails() {
             Inputs Disabled
           </Checkbox>
           <Form
-            className="border-[1px] border-[#999] max-w-[600px] p-[20px] rounded-[4px]"
+            className="border-[1px] border-[var(--color-light-gray)] max-w-[600px] p-[20px] rounded-[4px]"
             form={form}
             onFinish={updateFastSpringAccount}
             initialValues={{
@@ -74,7 +76,7 @@ export default function AccountDetails() {
                 >
                   <Input
                     style={{
-                      color: componentDisabled ? "#555" : "black",
+                      color: componentDisabled ? "var(--color-gray)" : "black",
                     }}
                   />
                 </Form.Item>
@@ -82,7 +84,7 @@ export default function AccountDetails() {
             })}
             <Button
               disabled={componentDisabled}
-              type="default"
+              type="primary"
               htmlType="submit"
               style={{ marginLeft: "100px" }}
             >
@@ -91,7 +93,7 @@ export default function AccountDetails() {
           </Form>
         </div>
       ) : (
-        <div className="border-2 border-[#777] border-solid rounded-[5px] p-[20px] w-[100%]">
+        <div className="border-2 border-[var(--color-light-gray)] border-solid rounded-[5px] p-[20px] w-[100%]">
           <p>
             No account details found. You need to have an active subscription to
             view and edit your account details.

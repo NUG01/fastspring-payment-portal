@@ -6,7 +6,6 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
   color: #000;
 
   --color-primary: #1a202c;
@@ -19,6 +18,11 @@
   --color-octonary: #edf2f7;
   --color-nonary: #f7fafc;
   --color-denary: #ffffff;
+
+  --color-light-gray: #999;
+  --color-gray: #555;
+  --color-elephant-white: #f9f6ee;
+  --color-dark-elephant-white: #f2efe5;
 
   --color-success: #9ae6b4;
   --color-error: #f56565;

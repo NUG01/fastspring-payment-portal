@@ -3,7 +3,7 @@ import {
   PauseCircleOutlined,
   PlayCircleOutlined,
 } from "@ant-design/icons"
-import { Button, message, Popconfirm } from "antd"
+import { Button, Popconfirm } from "antd"
 import { useState } from "react"
 import { fsEmebeddedComponentUrl } from "../consts"
 import { fadeSkeletonAway, scriptLoader } from "../helpers"
@@ -28,10 +28,10 @@ export default function Account() {
     useState(false)
 
   const [isMainSubPaused, setIsMainSubPaused] = useState(
-    mainSubscription.isPauseScheduled
+    mainSubscription?.isPauseScheduled
   )
   const [isSecondarySubPaused, setIsSecondarySubPaused] = useState(
-    secondarySubscription.isPauseScheduled
+    secondarySubscription?.isPauseScheduled
   )
 
   function renderPaymentScript() {
@@ -91,20 +91,20 @@ export default function Account() {
   }
 
   return (
-    <div className="bg-[#F9F6EE] min-h-[100vh] w-[100vw]">
+    <div className="bg-[var(--color-elephant-white)] min-h-[100vh] w-[100vw]">
       <div className="p-[50px]">
         <h1 className="text-[22px]">Manage your SaaSCo Subscription</h1>
         <div className="pt-[40px] flex gap-[50px]">
           <div className="text-[14px] p-[20px]">
             <h2 className="text-[21px]">Your Subscriptions</h2>
             {mainSubscription && (
-              <div className="mt-[20px] border-[1px] border-[#999] p-[20px] rounded-[4px] relative">
+              <div className="mt-[20px] border-[1px] border-[var(--color-light-gray)] p-[20px] rounded-[4px] relative">
                 <p>Subscription: {mainSubscription?.display}</p>
                 <p>
                   Monthly Charge: ${mainSubscription?.priceInPayoutCurrency}
                 </p>
-                {subscriptionStatus(isMainSubPaused)}
-                <div className="absolute top-[20px] right-[-40px]">
+                {subscriptionStatus(
+                  isMainSubPaused,
                   <Popconfirm
                     title={popconfirmTitle(
                       isMainSubPaused,
@@ -123,18 +123,18 @@ export default function Account() {
                   >
                     {pauseOrResumeIcon(isMainSubPaused)}
                   </Popconfirm>
-                </div>
+                )}
               </div>
             )}
             {secondarySubscription && (
-              <div className="mt-[20px] border-[1px] border-[#999] p-[20px] rounded-[4px] relative">
+              <div className="mt-[20px] border-[1px] border-[var(--color-light-gray)] p-[20px] rounded-[4px] relative">
                 <p>Subscription: {secondarySubscription?.display}</p>
                 <p>
                   Monthly Charge: $
                   {secondarySubscription?.priceInPayoutCurrency}
                 </p>
-                {subscriptionStatus(isSecondarySubPaused)}
-                <div className="absolute top-[20px] right-[-40px]">
+                {subscriptionStatus(
+                  isSecondarySubPaused,
                   <Popconfirm
                     title={popconfirmTitle(
                       isSecondarySubPaused,
@@ -151,19 +151,19 @@ export default function Account() {
                     okText="Yes"
                     cancelText="No"
                   >
-                    {pauseOrResumeIcon(secondarySubscription)}
+                    {pauseOrResumeIcon(isSecondarySubPaused)}
                   </Popconfirm>
-                </div>
+                )}
               </div>
             )}
             {!mainSubscription && (
-              <div className="mt-[20px] border-[1px] border-[#999] p-[20px] rounded-[4px]">
+              <div className="mt-[20px] border-[1px] border-[var(--color-light-gray)] p-[20px] rounded-[4px]">
                 <p>Not subscribed currently!</p>
                 <p>
                   Click button below to subscribe <ArrowDownOutlined />
                 </p>
                 <Button
-                  className="border-[1px] border-solid border-[#000] w-[100%] mt-[10px]"
+                  className="border-[1px] border-solid border-[black] w-[100%] mt-[10px]"
                   onClick={renderPaymentScript}
                 >
                   <p
@@ -175,13 +175,13 @@ export default function Account() {
               </div>
             )}
             {!secondarySubscription && mainSubscription && (
-              <div className="mt-[20px] border-[1px] border-[#999] p-[20px] rounded-[4px]">
+              <div className="mt-[20px] border-[1px] border-[var(--color-light-gray)] p-[20px] rounded-[4px]">
                 <p>Do you want to add 10 more seats?</p>
                 <p>
                   Click button below to subscribe <ArrowDownOutlined />
                 </p>
                 <Button
-                  className="border-[1px] border-solid border-[#000] w-[100%] mt-[10px]"
+                  className="border-[1px] border-solid border-[black] w-[100%] mt-[10px]"
                   onMouseEnter={() => {
                     setOneClickPayButtonHovered(true)
                   }}
@@ -203,9 +203,7 @@ export default function Account() {
           <PaymentComponentContainer scriptRendered={scriptRendered} />
         </div>
 
-        <div className="pt-[40px]">
-          <AccountDetails />
-        </div>
+        <AccountDetails />
       </div>
     </div>
   )
@@ -217,19 +215,23 @@ const popconfirmTitle = (isPaused, text) =>
 const popconfirmDescription = (isPaused) =>
   `Are you sure you want to ${isPaused ? "Continue" : "Pause"} your subscription?`
 
-const pauseOrResumeIcon = (isPaused) =>
-  isPaused ? (
-    <PlayCircleOutlined className="text-[27px] cursor-pointer" />
-  ) : (
-    <PauseCircleOutlined className="text-[27px] cursor-pointer" />
-  )
+const pauseOrResumeIcon = (isPaused) => {
+  const styles = "text-[27px] cursor-pointer text-[#555]"
 
-const subscriptionStatus = (isPaused) => {
+  return isPaused ? (
+    <PlayCircleOutlined className={styles} />
+  ) : (
+    <PauseCircleOutlined className={styles} />
+  )
+}
+
+const subscriptionStatus = (isPaused, pauseOrResumePopup) => {
   return (
-    <p
-      className={`text-[18px] ${isPaused ? "text-[var(--color-error)]" : "text-[var(--color-success)]"}`}
+    <div
+      className={`text-[18px] flex items-center justify-between ${isPaused ? "text-[var(--color-error)]" : "text-[var(--color-success)]"}`}
     >
-      {isPaused ? "(Paused)" : "(Active)"}
-    </p>
+      <span>{isPaused ? "(Paused)" : "(Active)"}</span>
+      <span>{pauseOrResumePopup}</span>
+    </div>
   )
 }

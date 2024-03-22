@@ -9,7 +9,9 @@ export default function PaymentComponentContainer({ scriptRendered }) {
         position: "absolute",
         top: 100,
         right: 50,
-        backgroundColor: scriptRendered ? "#F2EFE5" : undefined,
+        backgroundColor: scriptRendered
+          ? "var(--color-dark-elephant-white)"
+          : undefined,
         borderRadius: "4px",
       }}
     >
