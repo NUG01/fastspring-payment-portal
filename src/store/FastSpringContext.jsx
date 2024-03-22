@@ -26,14 +26,13 @@ export const FastSpringProvider = ({ children }) => {
             })
           }
         })
-        console.log(newProducts)
         setProducts(newProducts)
         setProductsFetched(true)
       }
     }
 
     const addSBL = () => {
-      const script = scriptLoader("fsportal.test.onfastspring.com")
+      const script = scriptLoader(fsPortalUrl)
 
       window.fastSpringCallBack = fastSpringCallBack
       script.setAttribute("data-data-callback", "fastSpringCallBack")

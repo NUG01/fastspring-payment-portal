@@ -34,7 +34,7 @@ BasicAxios.interceptors.response.use(
 
   (error) => {
     const message = error?.response?.data?.message
-    if (message && message !== "Unauthenticated.") {
+    if (message) {
       setResponseMessage(message, "var(--color-error)")
     }
 

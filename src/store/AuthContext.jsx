@@ -9,7 +9,9 @@ export function useAuth() {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [fastspringAccount, setFastspringAccount] = useState(null)
-  const [subscription, setSubscription] = useState(null)
+  const [mainSubscription, setMainSubscription] = useState(null)
+  const [secondarySubscription, setSecondarySubscription] = useState(null)
+  const [lastSubscriptionId, setLastSubscriptionId] = useState(null)
   const [managementUrl, setManagementUrl] = useState(null)
   const [loading, setLoading] = useState(true)
 
@@ -19,19 +21,12 @@ export const AuthProvider = ({ children }) => {
         setUser(data.user)
         setManagementUrl(data.management_url)
         setFastspringAccount(data.fastspring_account)
-        setSubscription(data.subscription)
+        setMainSubscription(data.subscriptions.main)
+        setSecondarySubscription(data.subscriptions.secondary)
+        setLastSubscriptionId(data.subscriptions.last_subscription_id)
       })
     } catch (error) {
-      setUser({
-        email: "test@fastspring.com",
-        name: "Fast",
-        surname: "Spring",
-        username: "Fast Spring",
-        fs_account_id: "Po4-MoBxTCCr9iGvp7bG8w",
-      })
-      setManagementUrl(
-        "https://fsportal.test.onfastspring.com/account/OZ0MEsEpTPeDHLEYWYaLog/THVHMt7LTCM"
-      )
+      console.error(error)
     } finally {
       setLoading(false)
     }
@@ -43,8 +38,10 @@ export const AuthProvider = ({ children }) => {
     login,
     loading,
     fastspringAccount,
+    mainSubscription,
+    secondarySubscription,
     managementUrl,
-    subscription,
+    lastSubscriptionId,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

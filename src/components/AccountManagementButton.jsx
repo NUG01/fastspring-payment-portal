@@ -1,11 +1,12 @@
 import { Button } from "antd"
 import React, { useEffect } from "react"
 import { loadEpmlScript } from "../helpers"
+import { CreditCardOutlined } from "@ant-design/icons"
+import { useAuth } from "../store/AuthContext"
 
 const AccountManagementButton = () => {
-  const authenticatedAccountURL =
-    "https://fsportal.test.onfastspring.com/account/OZ0MEsEpTPeDHLEYWYaLog/iaX5H9v-TYY" // Your authenticated account URL
-  const subscriptionId = "nvXALr7mSQqpBQcqqqFAcQ" // Your specific subscription ID
+  const { managementUrl, lastSubscriptionId } = useAuth()
+  const authenticatedAccountURL = managementUrl
 
   const loadAndInitEPML = () => {
     if (!document.getElementById("fsc-epml")) {
@@ -14,47 +15,26 @@ const AccountManagementButton = () => {
       script.onload = () => {
         if (window.fastspring && window.fastspring.epml) {
           window.fastspring.epml.init(authenticatedAccountURL)
-          window.fastspring.epml.paymentManagementComponent(subscriptionId)
+          window.fastspring.epml.paymentManagementComponent(lastSubscriptionId)
         }
       }
     } else {
       if (window.fastspring && window.fastspring.epml) {
-        window.fastspring.epml.paymentManagementComponent(subscriptionId)
+        window.fastspring.epml.paymentManagementComponent(lastSubscriptionId)
       }
     }
   }
-  // useEffect(() => {
-  //   const loadAndInitEPML = () => {
-  //     if (!document.getElementById("fsc-epml")) {
-  //       const script = loadEpmlScript();
-
-  //       script.onload = () => {
-  //         if (window.fastspring && window.fastspring.epml) {
-  //           window.fastspring.epml.init(authenticatedAccountURL);
-  //         }
-  //       };
-  //     }
-  //   };
-
-  //   loadAndInitEPML();
-  // }, []);
-
-  // const handleOpenPaymentManagement = () => {
-  //   loadAndInitEPML();
-  // if (window.fastspring && window.fastspring.epml) {
-  //   window.fastspring.epml.paymentManagementComponent(subscriptionId);
-  // }
-  // };
 
   return (
     <div>
       <Button
-        style={{
-          border: "1px solid #000",
-        }}
+        className="flex items-center justify-center gap-[5px] border-[1px] border-solid border-[#000]"
         onClick={loadAndInitEPML}
       >
-        Manage Payment Methods
+        <span>Manage Payment Methods</span>
+        <span>
+          <CreditCardOutlined className="text-[16px]" />
+        </span>
       </Button>
     </div>
   )

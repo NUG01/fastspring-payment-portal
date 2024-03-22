@@ -1,19 +1,38 @@
+import {
+  ArrowDownOutlined,
+  PauseCircleOutlined,
+  PlayCircleOutlined,
+} from "@ant-design/icons"
+import { Button, message, Popconfirm } from "antd"
 import { useState } from "react"
-import { useFastSpring } from "../store/FastSpringContext"
-import { useAuth } from "../store/AuthContext"
-import AccountManagementButton from "../components/AccountManagementButton"
-import { fadeSkeletonAway, scriptLoader } from "../helpers"
 import { fsEmebeddedComponentUrl } from "../consts"
-import { Button } from "antd"
+import { fadeSkeletonAway, scriptLoader } from "../helpers"
+import { useAuth } from "../store/AuthContext"
+import { useFastSpring } from "../store/FastSpringContext"
 import AccountDetails from "../components/AccountDetails"
+import PaymentComponentContainer from "../components/PaymentComponentContainer"
+import BasicAxios from "../lib/axios"
 
 export default function Account() {
   const { products, productsFetched } = useFastSpring()
-  const { subscription } = useAuth()
+  const { mainSubscription, secondarySubscription, fastspringAccount } =
+    useAuth()
+
+  const mainProduct = products.find((product) => product.priceTotalValue > 50)
+  const secondaryProduct = products.find(
+    (product) => product.priceTotalValue < 50
+  )
 
   const [scriptRendered, setScriptRendered] = useState(false)
   const [oneClickPayButtonHovered, setOneClickPayButtonHovered] =
     useState(false)
+
+  const [isMainSubPaused, setIsMainSubPaused] = useState(
+    mainSubscription.isPauseScheduled
+  )
+  const [isSecondarySubPaused, setIsSecondarySubPaused] = useState(
+    secondarySubscription.isPauseScheduled
+  )
 
   function renderPaymentScript() {
     if (productsFetched) {
@@ -21,7 +40,7 @@ export default function Account() {
       const attributes = [
         {
           name: "data-access-key",
-          value: "SAONYVFHRSM6PUXFW-KZMA",
+          value: import.meta.env.VITE_FS_ACCESS_KEY,
         },
       ]
 
@@ -33,13 +52,13 @@ export default function Account() {
       script.onload = () => {
         window.fastspring.builder.reset()
         if (!oneClickPayButtonHovered) {
-          window.fastspring.builder.add("saasco-bronze-10-seats", 1)
+          window.fastspring.builder.add(mainProduct.path, 1)
         } else {
           window.fastspring.builder.secure({
-            account: "Po4-MoBxTCCr9iGvp7bG8w",
+            account: fastspringAccount.id,
             items: [
               {
-                product: "additional-10-bronze-seats",
+                product: secondaryProduct.path,
                 quantity: 1,
               },
             ],
@@ -53,12 +72,22 @@ export default function Account() {
     }
   }
 
-  let mainProduct = "saasco-bronze-10-seats"
-  if (productsFetched) {
-    const foundProduct = products.find(
-      (product) => product.path === "saasco-bronze-10-seats"
-    )
-    if (foundProduct) mainProduct = foundProduct
+  const pauseSubscription = (subscriptionId) => {
+    BasicAxios.post("/fastspring/subscription/pause/" + subscriptionId)
+      .then(() => {
+        if (subscriptionId === mainSubscription.id) setIsMainSubPaused(true)
+        else setIsSecondarySubPaused(true)
+      })
+      .catch(() => {})
+  }
+
+  const resumeSubscription = (subscriptionId) => {
+    BasicAxios.post("/fastspring/subscription/resume/" + subscriptionId)
+      .then(() => {
+        if (subscriptionId === mainSubscription.id) setIsMainSubPaused(false)
+        else setIsSecondarySubPaused(false)
+      })
+      .catch(() => {})
   }
 
   return (
@@ -66,74 +95,141 @@ export default function Account() {
       <div className="p-[50px]">
         <h1 className="text-[22px]">Manage your SaaSCo Subscription</h1>
         <div className="pt-[40px] flex gap-[50px]">
-          <div className="text-[14px]">
-            <h2 className="text-[18px]">Your Subscription</h2>
-            <div className="pl-[40px] mt-[20px] ">
-              <p>Subscription: {subscription?.display}</p>
-              <p>Monthly Charge: ${subscription?.priceInPayoutCurrency}</p>
-            </div>
-
-            {(productsFetched || true) && (
-              <Button
-                style={{
-                  border: "1px solid #000",
-                  width: "100%",
-                }}
-                onClick={renderPaymentScript}
-              >
-                <span
-                  dangerouslySetInnerHTML={{
-                    __html: mainProduct?.description
-                      ? "Buy: " + mainProduct.description.summary
-                      : "Buy Base Plan Now",
+          <div className="text-[14px] p-[20px]">
+            <h2 className="text-[21px]">Your Subscriptions</h2>
+            {mainSubscription && (
+              <div className="mt-[20px] border-[1px] border-[#999] p-[20px] rounded-[4px] relative">
+                <p>Subscription: {mainSubscription?.display}</p>
+                <p>
+                  Monthly Charge: ${mainSubscription?.priceInPayoutCurrency}
+                </p>
+                {subscriptionStatus(isMainSubPaused)}
+                <div className="absolute top-[20px] right-[-40px]">
+                  <Popconfirm
+                    title={popconfirmTitle(
+                      isMainSubPaused,
+                      mainSubscription.display
+                    )}
+                    description={popconfirmDescription(isMainSubPaused)}
+                    onConfirm={() => {
+                      if (!isMainSubPaused) {
+                        pauseSubscription(mainSubscription.id)
+                      } else {
+                        resumeSubscription(mainSubscription.id)
+                      }
+                    }}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    {pauseOrResumeIcon(isMainSubPaused)}
+                  </Popconfirm>
+                </div>
+              </div>
+            )}
+            {secondarySubscription && (
+              <div className="mt-[20px] border-[1px] border-[#999] p-[20px] rounded-[4px] relative">
+                <p>Subscription: {secondarySubscription?.display}</p>
+                <p>
+                  Monthly Charge: $
+                  {secondarySubscription?.priceInPayoutCurrency}
+                </p>
+                {subscriptionStatus(isSecondarySubPaused)}
+                <div className="absolute top-[20px] right-[-40px]">
+                  <Popconfirm
+                    title={popconfirmTitle(
+                      isSecondarySubPaused,
+                      secondarySubscription.display
+                    )}
+                    description={popconfirmDescription(isSecondarySubPaused)}
+                    onConfirm={() => {
+                      if (!isSecondarySubPaused) {
+                        pauseSubscription(secondarySubscription.id)
+                      } else {
+                        resumeSubscription(secondarySubscription.id)
+                      }
+                    }}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    {pauseOrResumeIcon(secondarySubscription)}
+                  </Popconfirm>
+                </div>
+              </div>
+            )}
+            {!mainSubscription && (
+              <div className="mt-[20px] border-[1px] border-[#999] p-[20px] rounded-[4px]">
+                <p>Not subscribed currently!</p>
+                <p>
+                  Click button below to subscribe <ArrowDownOutlined />
+                </p>
+                <Button
+                  className="border-[1px] border-solid border-[#000] w-[100%] mt-[10px]"
+                  onClick={renderPaymentScript}
+                >
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: mainProduct?.description.summary,
+                    }}
+                  ></p>
+                </Button>
+              </div>
+            )}
+            {!secondarySubscription && mainSubscription && (
+              <div className="mt-[20px] border-[1px] border-[#999] p-[20px] rounded-[4px]">
+                <p>Do you want to add 10 more seats?</p>
+                <p>
+                  Click button below to subscribe <ArrowDownOutlined />
+                </p>
+                <Button
+                  className="border-[1px] border-solid border-[#000] w-[100%] mt-[10px]"
+                  onMouseEnter={() => {
+                    setOneClickPayButtonHovered(true)
                   }}
-                ></span>
-              </Button>
+                  onMouseLeave={() => {
+                    setOneClickPayButtonHovered(false)
+                  }}
+                  onClick={renderPaymentScript}
+                >
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: secondaryProduct?.description.summary,
+                    }}
+                  ></p>
+                </Button>
+              </div>
             )}
           </div>
 
-          <div
-            style={{
-              position: "absolute",
-              top: 100,
-              right: 50,
-              backgroundColor: scriptRendered ? "#F2EFE5" : undefined,
-              borderRadius: "4px",
-            }}
-          >
-            <div
-              className="col-6"
-              id="fsc-embedded-checkout-container"
-              style={{
-                width: "500px",
-                height: "500px",
-              }}
-            ></div>
-          </div>
+          <PaymentComponentContainer scriptRendered={scriptRendered} />
         </div>
-        <div className="pt-[40px]">
-          <AccountManagementButton />
-        </div>
-        <div className="pt-[80px]">
-          <h2
-            onMouseEnter={() => {
-              setOneClickPayButtonHovered(true)
-            }}
-            onMouseLeave={() => {
-              setOneClickPayButtonHovered(false)
-            }}
-            className="text-[18px]"
-            onClick={() => {
-              renderPaymentScript()
-            }}
-          >
-            Buy more seats
-          </h2>
-        </div>
+
         <div className="pt-[40px]">
           <AccountDetails />
         </div>
       </div>
     </div>
+  )
+}
+
+const popconfirmTitle = (isPaused, text) =>
+  `${isPaused ? "Continue" : "Pause"} ${text} Subscription?`
+
+const popconfirmDescription = (isPaused) =>
+  `Are you sure you want to ${isPaused ? "Continue" : "Pause"} your subscription?`
+
+const pauseOrResumeIcon = (isPaused) =>
+  isPaused ? (
+    <PlayCircleOutlined className="text-[27px] cursor-pointer" />
+  ) : (
+    <PauseCircleOutlined className="text-[27px] cursor-pointer" />
+  )
+
+const subscriptionStatus = (isPaused) => {
+  return (
+    <p
+      className={`text-[18px] ${isPaused ? "text-[var(--color-error)]" : "text-[var(--color-success)]"}`}
+    >
+      {isPaused ? "(Paused)" : "(Active)"}
+    </p>
   )
 }
