@@ -3,7 +3,7 @@ import {
   PauseCircleOutlined,
   PlayCircleOutlined,
 } from "@ant-design/icons"
-import { Button, Popconfirm } from "antd"
+import { Button, Divider, Popconfirm, Tag, Typography } from "antd"
 import { useState } from "react"
 import { fsEmebeddedComponentUrl } from "../consts"
 import { fadeSkeletonAway, scriptLoader } from "../helpers"
@@ -12,11 +12,14 @@ import { useFastSpring } from "../store/FastSpringContext"
 import AccountDetails from "../components/AccountDetails"
 import PaymentComponentContainer from "../components/PaymentComponentContainer"
 import BasicAxios from "../lib/axios"
+const { Text } = Typography
 
 export default function Account() {
   const { products, productsFetched } = useFastSpring()
-  const { mainSubscription, secondarySubscription, fastspringAccount } =
+  const { mainSubscription, secondarySubscription, fastspringAccount, user } =
     useAuth()
+
+  console.log(products)
 
   const mainProduct = products.find((product) => product.priceTotalValue > 50)
   const secondaryProduct = products.find(
@@ -52,6 +55,15 @@ export default function Account() {
       script.onload = () => {
         window.fastspring.builder.reset()
         if (!oneClickPayButtonHovered) {
+          const mySession = {
+            paymentContact: {
+              email: user?.email ?? "",
+              firstName: user?.name ?? "",
+              lastName: user?.surname ?? "",
+            },
+          }
+
+          window.fastspring.builder.push(mySession)
           window.fastspring.builder.add(mainProduct.path, 1)
         } else {
           window.fastspring.builder.secure({
@@ -93,16 +105,22 @@ export default function Account() {
   return (
     <div className="bg-[var(--color-elephant-white)] min-h-[100vh] w-[100vw]">
       <div className="p-[50px]">
-        <h1 className="text-[22px]">Manage your SaaSCo Subscription</h1>
-        <div className="pt-[40px] flex gap-[50px]">
-          <div className="text-[14px] p-[20px]">
-            <h2 className="text-[21px]">Your Subscriptions</h2>
+        <Text underline className="text-[22px]">
+          Manage your SaaSCo Subscription
+        </Text>
+
+        <div className="pt-[40px] gap-[50px]">
+          <Text keyboard className="text-[24px]">
+            Your Subscriptions
+          </Text>
+          <div className="text-[14px] p-[20px] pl-[20px] flex items-start justify-start gap-[20px]">
             {mainSubscription && (
-              <div className="mt-[20px] border-[1px] border-[var(--color-light-gray)] p-[20px] rounded-[4px] relative">
-                <p>Subscription: {mainSubscription?.display}</p>
-                <p>
-                  Monthly Charge: ${mainSubscription?.priceInPayoutCurrency}
-                </p>
+              <div className="mt-[20px] p-[20px] rounded-[4px] relative w-[30%] h-[150px] shadow-lg bg-[#fff] text-[16px]">
+                {tags([
+                  mainSubscription?.priceDisplay,
+                  mainSubscription?.intervalUnit + "ly",
+                ])}
+                <p>{mainSubscription?.display}</p>
                 {subscriptionStatus(
                   isMainSubPaused,
                   <Popconfirm
@@ -127,12 +145,12 @@ export default function Account() {
               </div>
             )}
             {secondarySubscription && (
-              <div className="mt-[20px] border-[1px] border-[var(--color-light-gray)] p-[20px] rounded-[4px] relative">
-                <p>Subscription: {secondarySubscription?.display}</p>
-                <p>
-                  Monthly Charge: $
-                  {secondarySubscription?.priceInPayoutCurrency}
-                </p>
+              <div className="mt-[20px] shadow-lg bg-[#fff] p-[20px] rounded-[4px] relative w-[30%] h-[150px] text-[16px]">
+                {tags([
+                  secondarySubscription?.priceDisplay,
+                  secondarySubscription?.intervalUnit + "ly",
+                ])}
+                <p>{secondarySubscription?.display}</p>
                 {subscriptionStatus(
                   isSecondarySubPaused,
                   <Popconfirm
@@ -157,31 +175,17 @@ export default function Account() {
               </div>
             )}
             {!mainSubscription && (
-              <div className="mt-[20px] border-[1px] border-[var(--color-light-gray)] p-[20px] rounded-[4px]">
+              <div className="mt-[20px] border-[1px] shadow-lg bg-[#fff] p-[20px] rounded-[4px] w-[30%] h-[150px] text-[16px]">
+                {tags([
+                  mainProduct?.total,
+                  mainProduct?.future.intervalUnit + "ly",
+                ])}
                 <p>Not subscribed currently!</p>
-                <p>
-                  Click button below to subscribe <ArrowDownOutlined />
-                </p>
+                <p>Do you want to add {'"' + mainProduct?.display + '"'}?</p>
+
                 <Button
-                  className="border-[1px] border-solid border-[black] w-[100%] mt-[10px]"
-                  onClick={renderPaymentScript}
-                >
-                  <p
-                    dangerouslySetInnerHTML={{
-                      __html: mainProduct?.description.summary,
-                    }}
-                  ></p>
-                </Button>
-              </div>
-            )}
-            {!secondarySubscription && mainSubscription && (
-              <div className="mt-[20px] border-[1px] border-[var(--color-light-gray)] p-[20px] rounded-[4px]">
-                <p>Do you want to add 10 more seats?</p>
-                <p>
-                  Click button below to subscribe <ArrowDownOutlined />
-                </p>
-                <Button
-                  className="border-[1px] border-solid border-[black] w-[100%] mt-[10px]"
+                  className="mt-[12px] text-[16px] flex items-center justify-center p-[10px]"
+                  type="primary"
                   onMouseEnter={() => {
                     setOneClickPayButtonHovered(true)
                   }}
@@ -190,11 +194,38 @@ export default function Account() {
                   }}
                   onClick={renderPaymentScript}
                 >
-                  <p
-                    dangerouslySetInnerHTML={{
-                      __html: secondaryProduct?.description.summary,
-                    }}
-                  ></p>
+                  <span>Subscribe</span>
+                </Button>
+                <Button
+                  className="border-[1px] border-solid border-[black] w-[100%] mt-[10px]"
+                  onClick={renderPaymentScript}
+                >
+                  <span>Subscribe</span>
+                </Button>
+              </div>
+            )}
+            {!secondarySubscription && mainSubscription && (
+              <div className="mt-[20px] p-[20px] rounded-[4px] w-[30%] h-[150px] shadow-lg bg-[#fff] text-[16px]">
+                {tags([
+                  secondaryProduct?.total,
+                  secondaryProduct?.future.intervalUnit + "ly",
+                ])}
+                <p>
+                  Do you want to add {'"' + secondaryProduct?.display + '"'}?
+                </p>
+
+                <Button
+                  className="mt-[12px] text-[16px] flex items-center justify-center p-[10px]"
+                  type="primary"
+                  onMouseEnter={() => {
+                    setOneClickPayButtonHovered(true)
+                  }}
+                  onMouseLeave={() => {
+                    setOneClickPayButtonHovered(false)
+                  }}
+                  onClick={renderPaymentScript}
+                >
+                  <span>Subscribe</span>
                 </Button>
               </div>
             )}
@@ -202,6 +233,7 @@ export default function Account() {
 
           <PaymentComponentContainer scriptRendered={scriptRendered} />
         </div>
+        <Divider></Divider>
 
         <AccountDetails />
       </div>
@@ -227,11 +259,50 @@ const pauseOrResumeIcon = (isPaused) => {
 
 const subscriptionStatus = (isPaused, pauseOrResumePopup) => {
   return (
-    <div
-      className={`text-[18px] flex items-center justify-between ${isPaused ? "text-[var(--color-error)]" : "text-[var(--color-success)]"}`}
-    >
-      <span>{isPaused ? "(Paused)" : "(Active)"}</span>
+    <div className="text-[18px] flex items-center justify-between mt-[12px]">
+      <span>
+        {isPaused ? (
+          <Tag
+            color="red"
+            style={{
+              fontSize: "16px",
+              padding: "5px",
+            }}
+          >
+            Paused
+          </Tag>
+        ) : (
+          <Tag
+            color="green"
+            style={{
+              fontSize: "16px",
+              padding: "5px",
+            }}
+          >
+            Active
+          </Tag>
+        )}
+      </span>
       <span>{pauseOrResumePopup}</span>
+    </div>
+  )
+}
+
+const tags = (tagsArray) => {
+  return (
+    <div className="mb-[10px] flex items-start justify-start">
+      {tagsArray.map((tag) => {
+        return (
+          <Tag
+            style={{
+              fontSize: "14px",
+            }}
+            key={tag}
+          >
+            {tag}
+          </Tag>
+        )
+      })}
     </div>
   )
 }

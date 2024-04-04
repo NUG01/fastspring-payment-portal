@@ -5,10 +5,11 @@ import { useAuth } from "../store/AuthContext"
 
 const AccountManagementButton = () => {
   const { managementUrl, lastSubscriptionId } = useAuth()
-  const authenticatedAccountURL = managementUrl
-  // const lastSubscriptionId = "CASqMyihRR2evdIJJg9ZSw"
-  // const authenticatedAccountURL =
-  //   "https://fsportal.test.onfastspring.com/account/ynYwwQd2R_GTxT2oWgL12A/U_uq0ag-T0M"
+  // const authenticatedAccountURL = managementUrl
+  // const subscriptionId = lastSubscriptionId
+  const subscriptionId = "927110AVRUuTcfhrDDPxYA"
+  const authenticatedAccountURL =
+    "https://fsportal.test.onfastspring.com/account/hC-EPhYnSqKIQnIZDu8upA/Y5-p8sXYR5g"
 
   const loadAndInitEPML = () => {
     if (!document.getElementById("fsc-epml")) {
@@ -17,12 +18,12 @@ const AccountManagementButton = () => {
       script.onload = () => {
         if (window.fastspring && window.fastspring.epml) {
           window.fastspring.epml.init(authenticatedAccountURL)
-          window.fastspring.epml.paymentManagementComponent(lastSubscriptionId)
+          window.fastspring.epml.paymentManagementComponent(subscriptionId)
         }
       }
     } else {
       if (window.fastspring && window.fastspring.epml) {
-        window.fastspring.epml.paymentManagementComponent(lastSubscriptionId)
+        window.fastspring.epml.paymentManagementComponent(subscriptionId)
       }
     }
   }
@@ -30,7 +31,8 @@ const AccountManagementButton = () => {
   return (
     <div>
       <Button
-        className="flex items-center justify-center gap-[5px] border-[1px] border-solid border-[black]"
+        className="mt-[12px] text-[16px] p-[10px] flex items-center justify-center gap-[5px]"
+        type="primary"
         onClick={loadAndInitEPML}
       >
         <span>Manage Payment Methods</span>

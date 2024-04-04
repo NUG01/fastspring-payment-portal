@@ -1,8 +1,10 @@
-import { Button, Checkbox, Form, Input } from "antd"
+import { Button, Checkbox, Form, Input, Typography } from "antd"
 import { useState } from "react"
 import { useAuth } from "../store/AuthContext"
 import BasicAxios from "../lib/axios"
 import AccountManagementButton from "./AccountManagementButton"
+
+const { Text } = Typography
 
 export default function AccountDetails() {
   const { fastspringAccount, user } = useAuth()
@@ -23,8 +25,21 @@ export default function AccountDetails() {
 
   return (
     <div className="w-[60%] flex items-start justify-start flex-col pt-[40px]">
-      <div className="text-[21px] pl-[20px]">Account Details</div>
+      <Text keyboard className="text-[24px]">
+        Billing Details
+      </Text>
 
+      <div className="mt-[20px] pl-[20px]">
+        <Text strong>FastSpring ID: </Text>
+        <Text mark>{user?.fs_account_id ? user.fs_account_id : "No ID"}</Text>
+      </div>
+
+      {!contact && (
+        //For testing when there is no user
+        <div className="mb-[20px] pl-[20px]">
+          <AccountManagementButton />
+        </div>
+      )}
       {contact ? (
         <div className="p-[20px] w-[100%]">
           <div className="mb-[20px]">
@@ -38,7 +53,7 @@ export default function AccountDetails() {
             Inputs Disabled
           </Checkbox>
           <Form
-            className="border-[1px] border-[var(--color-light-gray)] max-w-[600px] p-[20px] rounded-[4px]"
+            className="max-w-[600px] p-[20px] rounded-[5px] shadow-lg bg-[#fff] text-[16px]"
             form={form}
             onFinish={updateFastSpringAccount}
             initialValues={{

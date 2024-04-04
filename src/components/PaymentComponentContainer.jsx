@@ -5,6 +5,7 @@ export default function PaymentComponentContainer({ scriptRendered }) {
   }
   return (
     <div
+      className={`${scriptRendered ? "shadow-lg bg-[#fff]" : undefined}`}
       style={{
         position: "absolute",
         top: 100,
