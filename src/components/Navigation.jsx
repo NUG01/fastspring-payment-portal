@@ -1,64 +1,11 @@
-// import { Layout, Menu, Typography } from "antd"
-// import { useLocation } from "react-router-dom"
-// import PropTypes from "prop-types"
-// import { Link } from "react-router-dom"
-
-// const { Header } = Layout
-// const { Title } = Typography
-
-// const Navigation = ({ user }) => {
-//   Navigation.propTypes = {
-//     user: PropTypes.shape({
-//       username: PropTypes.string,
-//     }),
-//   }
-
-//   const location = useLocation()
-//   return (
-//     <nav>
-//       <Layout className="layout">
-//         <Header
-//           style={{
-//             display: "flex",
-//             justifyContent: "space-between",
-//             alignItems: "center",
-//           }}
-//         >
-//           <div style={{ flex: 1 }}>
-//             <Title level={3} style={{ color: "white", margin: 0 }}>
-//               SaaSCo Customer Portal
-//             </Title>
-//           </div>
-//           <Menu
-//             theme="dark"
-//             mode="horizontal"
-//             defaultSelectedKeys={[location.pathname]}
-//             style={{ lineHeight: "64px", flex: 1, justifyContent: "end" }}
-//           >
-//             <Menu.Item key="/dahsboard">
-//               <Link to="/dashboard">Dashboard</Link>
-//             </Menu.Item>
-//             <Menu.Item key="/">
-//               <Link to="/">Account</Link>
-//             </Menu.Item>
-//             <Menu.Item key="/support">Support</Menu.Item>
-//           </Menu>
-//           <div style={{ color: "white", flex: 1, textAlign: "end" }}>
-//             User: {user ? user.username : "Not logged in"}
-//           </div>
-//         </Header>
-//       </Layout>
-//     </nav>
-//   )
-// }
-
-// export default Navigation
-
 import { Fragment } from "react"
 import { Disclosure, Menu, Transition } from "@headlessui/react"
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
 import logo from "../assets/logo.png"
 import PropTypes from "prop-types"
+import { Typography } from "antd"
+
+const { Text } = Typography
 
 const navigation = [
   { name: "Dashboard", href: "#", current: false },
@@ -82,7 +29,7 @@ export default function Navigation({ user }) {
       {({ open }) => (
         <>
           <div className="px-[100px]">
-            <div className="relative flex h-16 items-center justify-between">
+            <div className="relative flex h-24 items-center justify-between">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                 {/* Mobile menu button*/}
                 <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
@@ -98,7 +45,7 @@ export default function Navigation({ user }) {
               <div className="flex flex-1 items-center justify-center sm:justify-start">
                 <div className="flex flex-shrink-0 items-center">
                   <img
-                    className="w-[50px] h-[50px] rounded-[5px]"
+                    className="w-[75px] h-[75px] rounded-[5px]"
                     src={logo}
                     alt="logo"
                   />
@@ -124,9 +71,9 @@ export default function Navigation({ user }) {
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <div className="text-[#fff]">
+                <Text strong className="text-[16px] text-[#fff]">
                   User: {user ? user.username : "Not logged in"}
-                </div>
+                </Text>
 
                 <Menu as="div" className="relative ml-3">
                   <Transition
