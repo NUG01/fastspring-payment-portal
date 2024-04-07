@@ -113,7 +113,7 @@ export default function Account() {
           </Text>
           <div className="text-[14px] p-[20px] pl-[20px] flex items-start justify-start gap-[20px]">
             {mainSubscription && (
-              <div className="mt-[20px] p-[20px] rounded-[4px] relative w-[30%] h-[150px] shadow-lg bg-[#fff] text-[16px]">
+              <div className={subscriptionItemStyles}>
                 {tags([
                   mainSubscription?.priceDisplay,
                   mainSubscription?.intervalUnit + "ly",
@@ -143,7 +143,7 @@ export default function Account() {
               </div>
             )}
             {secondarySubscription && (
-              <div className="mt-[20px] shadow-lg bg-[#fff] p-[20px] rounded-[4px] relative w-[30%] h-[150px] text-[16px]">
+              <div className={subscriptionItemStyles}>
                 {tags([
                   secondarySubscription?.priceDisplay,
                   secondarySubscription?.intervalUnit + "ly",
@@ -173,7 +173,7 @@ export default function Account() {
               </div>
             )}
             {!mainSubscription && (
-              <div className="mt-[20px] border-[1px] shadow-lg bg-[#fff] p-[20px] rounded-[4px] w-[30%] h-[160px] text-[16px]">
+              <div className={subscriptionItemStyles}>
                 {tags([
                   mainProduct?.total,
                   mainProduct?.future.intervalUnit + "ly",
@@ -191,7 +191,7 @@ export default function Account() {
               </div>
             )}
             {!secondarySubscription && mainSubscription && (
-              <div className="mt-[20px] p-[20px] rounded-[4px] w-[30%] h-[150px] shadow-lg bg-[#fff] text-[16px]">
+              <div className={subscriptionItemStyles}>
                 {tags([
                   secondaryProduct?.total,
                   secondaryProduct?.future.intervalUnit + "ly",
@@ -297,3 +297,6 @@ const tags = (tagsArray) => {
     </div>
   )
 }
+
+const subscriptionItemStyles =
+  "mt-[20px] p-[20px] rounded-[4px] w-[30%] h-[160px] shadow-lg bg-[#fff] text-[16px]"
