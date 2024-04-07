@@ -31,7 +31,7 @@ export default function Account() {
     secondarySubscription?.isPauseScheduled
   )
 
-  function renderPaymentScript() {
+  const renderPaymentScript = () => {
     if (productsFetched) {
       setScriptRendered(true)
       const attributes = [
