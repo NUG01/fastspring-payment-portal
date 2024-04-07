@@ -1,5 +1,7 @@
 import { createContext, useContext, useState } from "react"
 import BasicAxios from "../lib/axios"
+import PropTypes from "prop-types"
+
 const AuthContext = createContext()
 
 export function useAuth() {
@@ -7,6 +9,10 @@ export function useAuth() {
 }
 
 export const AuthProvider = ({ children }) => {
+  AuthProvider.propTypes = {
+    children: PropTypes.node,
+  }
+
   const [user, setUser] = useState(null)
   const [fastspringAccount, setFastspringAccount] = useState(null)
   const [mainSubscription, setMainSubscription] = useState(null)

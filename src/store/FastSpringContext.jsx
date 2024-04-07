@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { scriptLoader } from "../helpers"
 import { fsPortalUrl } from "../consts"
+import PropTypes from "prop-types"
+
 const FastSpringContext = createContext()
 
 export const useFastSpring = () => {
@@ -9,6 +11,10 @@ export const useFastSpring = () => {
 }
 
 export const FastSpringProvider = ({ children }) => {
+  FastSpringProvider.propTypes = {
+    children: PropTypes.node,
+  }
+
   const [products, setProducts] = useState([])
   const [productsFetched, setProductsFetched] = useState(false)
   const [data, setData] = useState({})
