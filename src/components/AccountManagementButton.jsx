@@ -5,11 +5,13 @@ import { useAuth } from "../store/AuthContext"
 
 const AccountManagementButton = () => {
   const { managementUrl, lastSubscriptionId } = useAuth()
-  // const authenticatedAccountURL = managementUrl
-  // const subscriptionId = lastSubscriptionId
-  const subscriptionId = "BYZNbg2aT7Wiu9vSO49yBw"
-  const authenticatedAccountURL =
-    "https://fsportal.test.onfastspring.com/account/ncObbNbXS1Kle8Nd0L7d4Q/DjMaU5cWQcs"
+  const authenticatedAccountURL = managementUrl
+  const subscriptionId = lastSubscriptionId
+
+  // This is a mock data for testing purposes locally on http protocol
+  // const subscriptionId = "sub_1234567890"
+  // const authenticatedAccountURL =
+  //   "https://fsportal.test.onfastspring.com/account/managemenrURL"
 
   const loadAndInitEPML = () => {
     if (!document.getElementById("fsc-epml")) {
