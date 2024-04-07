@@ -14,6 +14,7 @@ export default function PaymentComponentContainer({ scriptRendered }) {
           ? "var(--color-dark-elephant-white)"
           : undefined,
         borderRadius: "4px",
+        marginTop: "20px",
       }}
     >
       <div

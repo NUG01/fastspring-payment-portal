@@ -1,15 +1,13 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import { Routes, Route } from "react-router-dom"
 import Account from "./pages/Account"
 import Navigation from "./components/Navigation"
 import { useEffect } from "react"
 import Spinner from "./components/Spinner"
 import { useAuth } from "./store/AuthContext"
 import { FastSpringProvider } from "./store/FastSpringContext"
-import Dashboard from "./pages/Dashboard"
 
 function App() {
-  const { user, login, loading, fastspringAccount } = useAuth()
-  console.log(fastspringAccount)
+  const { user, login, loading } = useAuth()
 
   useEffect(() => {
     if (!user) login()
@@ -24,9 +22,6 @@ function App() {
           <Navigation user={user} />
           <Routes>
             <Route path="/" element={<Account user={user} />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-
-            {/* <Route path="/about" element={<About />} /> */}
           </Routes>
         </FastSpringProvider>
       )}

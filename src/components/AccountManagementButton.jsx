@@ -7,9 +7,9 @@ const AccountManagementButton = () => {
   const { managementUrl, lastSubscriptionId } = useAuth()
   // const authenticatedAccountURL = managementUrl
   // const subscriptionId = lastSubscriptionId
-  const subscriptionId = "927110AVRUuTcfhrDDPxYA"
+  const subscriptionId = "BYZNbg2aT7Wiu9vSO49yBw"
   const authenticatedAccountURL =
-    "https://fsportal.test.onfastspring.com/account/hC-EPhYnSqKIQnIZDu8upA/Y5-p8sXYR5g"
+    "https://fsportal.test.onfastspring.com/account/ncObbNbXS1Kle8Nd0L7d4Q/DjMaU5cWQcs"
 
   const loadAndInitEPML = () => {
     if (!document.getElementById("fsc-epml")) {
@@ -21,10 +21,8 @@ const AccountManagementButton = () => {
           window.fastspring.epml.paymentManagementComponent(subscriptionId)
         }
       }
-    } else {
-      if (window.fastspring && window.fastspring.epml) {
-        window.fastspring.epml.paymentManagementComponent(subscriptionId)
-      }
+    } else if (window.fastspring && window.fastspring.epml) {
+      window.fastspring.epml.paymentManagementComponent(subscriptionId)
     }
   }
 

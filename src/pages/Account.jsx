@@ -1,8 +1,4 @@
-import {
-  ArrowDownOutlined,
-  PauseCircleOutlined,
-  PlayCircleOutlined,
-} from "@ant-design/icons"
+import { PauseCircleOutlined, PlayCircleOutlined } from "@ant-design/icons"
 import { Button, Divider, Popconfirm, Tag, Typography } from "antd"
 import { useState } from "react"
 import { fsEmebeddedComponentUrl } from "../consts"
@@ -18,8 +14,6 @@ export default function Account() {
   const { products, productsFetched } = useFastSpring()
   const { mainSubscription, secondarySubscription, fastspringAccount, user } =
     useAuth()
-
-  console.log(products)
 
   const mainProduct = products.find((product) => product.priceTotalValue > 50)
   const secondaryProduct = products.find(
@@ -47,6 +41,7 @@ export default function Account() {
         },
       ]
 
+      // Load the FastSpring script
       const script = scriptLoader(
         fsEmebeddedComponentUrl,
         oneClickPayButtonHovered ? attributes : null
@@ -54,6 +49,7 @@ export default function Account() {
 
       script.onload = () => {
         window.fastspring.builder.reset()
+        // Add the main product to the payment session
         if (!oneClickPayButtonHovered) {
           const mySession = {
             paymentContact: {
@@ -66,6 +62,7 @@ export default function Account() {
           window.fastspring.builder.push(mySession)
           window.fastspring.builder.add(mainProduct.path, 1)
         } else {
+          // Add the secondary product to the session and build one-click payment component
           window.fastspring.builder.secure({
             account: fastspringAccount.id,
             items: [
@@ -77,6 +74,7 @@ export default function Account() {
           })
         }
 
+        // Hide payment component skeleton and show the real component
         fadeSkeletonAway()
       }
 
@@ -175,7 +173,7 @@ export default function Account() {
               </div>
             )}
             {!mainSubscription && (
-              <div className="mt-[20px] border-[1px] shadow-lg bg-[#fff] p-[20px] rounded-[4px] w-[30%] h-[150px] text-[16px]">
+              <div className="mt-[20px] border-[1px] shadow-lg bg-[#fff] p-[20px] rounded-[4px] w-[30%] h-[160px] text-[16px]">
                 {tags([
                   mainProduct?.total,
                   mainProduct?.future.intervalUnit + "ly",
@@ -186,18 +184,6 @@ export default function Account() {
                 <Button
                   className="mt-[12px] text-[16px] flex items-center justify-center p-[10px]"
                   type="primary"
-                  onMouseEnter={() => {
-                    setOneClickPayButtonHovered(true)
-                  }}
-                  onMouseLeave={() => {
-                    setOneClickPayButtonHovered(false)
-                  }}
-                  onClick={renderPaymentScript}
-                >
-                  <span>Subscribe</span>
-                </Button>
-                <Button
-                  className="border-[1px] border-solid border-[black] w-[100%] mt-[10px]"
                   onClick={renderPaymentScript}
                 >
                   <span>Subscribe</span>
@@ -233,7 +219,12 @@ export default function Account() {
 
           <PaymentComponentContainer scriptRendered={scriptRendered} />
         </div>
-        <Divider></Divider>
+        <Divider
+          style={{
+            minWidth: "75%",
+            width: "75%",
+          }}
+        ></Divider>
 
         <AccountDetails />
       </div>

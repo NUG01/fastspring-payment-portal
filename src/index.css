@@ -3,21 +3,9 @@
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color: #000;
-
-  --color-primary: #1a202c;
-  --color-secondary: #2d3748;
-  --color-tertiary: #4a5568;
-  --color-quaternary: #718096;
-  --color-quinary: #a0aec0;
-  --color-senary: #cbd5e0;
-  --color-septenary: #e2e8f0;
-  --color-octonary: #edf2f7;
-  --color-nonary: #f7fafc;
-  --color-denary: #ffffff;
 
   --color-light-gray: #999;
   --color-gray: #555;

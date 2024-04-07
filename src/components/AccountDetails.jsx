@@ -1,4 +1,5 @@
 import { Button, Checkbox, Form, Input, Typography } from "antd"
+import { WarningTwoTone } from "@ant-design/icons"
 import { useState } from "react"
 import { useAuth } from "../store/AuthContext"
 import BasicAxios from "../lib/axios"
@@ -108,7 +109,12 @@ export default function AccountDetails() {
           </Form>
         </div>
       ) : (
-        <div className="border-2 border-[var(--color-light-gray)] border-solid rounded-[5px] p-[20px] w-[100%]">
+        <div className="shadow-lg bg-[#fff] rounded-[5px] p-[20px] w-[100%] flex items-center justify-start gap-[10px]">
+          <WarningTwoTone
+            style={{
+              fontSize: "24px",
+            }}
+          />
           <p>
             No account details found. You need to have an active subscription to
             view and edit your account details.
