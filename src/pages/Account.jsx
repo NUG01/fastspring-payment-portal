@@ -17,7 +17,7 @@ export default function Account() {
 
   const mainProduct = products.find((product) => product.priceTotalValue > 50)
   const secondaryProduct = products.find(
-    (product) => product.priceTotalValue < 50
+    (product) => product.priceTotalValue <= 50
   )
 
   const [scriptRendered, setScriptRendered] = useState(false)

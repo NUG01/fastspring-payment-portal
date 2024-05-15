@@ -9,9 +9,9 @@ const AccountManagementButton = () => {
   const subscriptionId = lastSubscriptionId
 
   // This is a mock data for testing purposes locally on http protocol
-  // const subscriptionId = "sub_1234567890"
+  // const subscriptionId = "SK3N08XHRamP8slRwoN4_Q"
   // const authenticatedAccountURL =
-  //   "https://fsportal.test.onfastspring.com/account/managementURL"
+  //   "https://fsportal.test.onfastspring.com/account/ncObbNbXS1Kle8Nd0L7d4Q/NVJ15LCKSmY"
 
   const loadAndInitEPML = () => {
     if (!document.getElementById("fsc-epml")) {
